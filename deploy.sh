@@ -1,4 +1,5 @@
 ACTION=${1}
+MESSAGE=${2}
 
 #
 #   Brief:  返回当前脚本所在目录绝对路径
@@ -42,7 +43,14 @@ if [[ ${ACTION} != '' ]]; then
     zip pams.zip * -x deploy.sh
 
     git add .
-    git commit -m "No.${RANDOM} - zip file for deployment, commit time: ${NOW}"
+
+    if [[ ${MESSAGE} == '' ]]; then
+
+        git commit -m "No.${RANDOM} - files for deployment, commit time: ${NOW}"
+    else
+        git commit -m "${MESSAGE}"
+    fi
+
     git push -u origin master
 
     rm  pams.zip
@@ -55,3 +63,9 @@ unzip   pams.zip -d ~/PAMS
 rm      pams.zip
 
 sudo ln -s ~/PAMS/entry.sh /usr/bin/mgo
+
+wget    https://raw.githubusercontent.com/Kaiyokun/PAMS/master/test_project.zip
+unzip   test_project.zip -d test_project
+rm      test_project.zip
+
+mgo     test_project

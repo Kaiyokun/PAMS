@@ -77,7 +77,7 @@ clear
 echo    -e "   你好，$USER！欢迎使用C/C++工程自动化管理脚本！\n"
 echo    -n "工程[${PROJECT_NAME}]所在的根目录绝对路径为: "
 cd  ${PROJECT_DIRECTORY_ROOT} && pwd
-read    -t 3 -p "开始构建工程，[${BUILD_TYPE}]模式..."
+read    -t 1 -p "   Step 1：开始创建目录结构..."
 echo
 
 #   设置模板实参
@@ -99,7 +99,7 @@ cat ${REF_FILE_DIRECTORY_STRUCTURE}~ | GenDirStruct ${PWD}  \
 #   管理工程文件
 if [[ ${PROJECT_DIRECTORY_ALREADY_EXIST} == TRUE ]]; then
 
-    cd  ${PROJECT_DIRECTORY}
+    cd  ${PROJECT_NAME}
     ${BASH_SCRIPT_MANAGE}   ${THIS_DIRECTORY}/${COMMON_HEADER}  \
                             ${PROJECT_NAME}                     \
                             ${BUILD_TYPE}

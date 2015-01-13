@@ -37,7 +37,8 @@ fi
 cd  ${BUILT}/${TEST_}${PROJECT_NAME}
 
 #   开始测试
-clear
+read    -t 1 -p "   Step 3：开始测试..."
+echo
 PS3='>> '
 
 while true; do

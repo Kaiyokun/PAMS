@@ -43,6 +43,9 @@ for FILE in $(ls); do
 done
 
 #   启动构建
+read    -t 1 -p "   Step 2：开始构建..."
+echo
+
 cd  ../${BUILT}
 cmake   ..
 make

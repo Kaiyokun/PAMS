@@ -79,7 +79,7 @@ GenDirStruct()
     prev_level=0
     prev_dir=.
 
-    while read line; do
+    while read  line; do
 
         depth=${line% *}
 
@@ -88,13 +88,21 @@ GenDirStruct()
             curr_level=$[${#depth}/4]
             curr_dir=${line##* }
 
+            Repeat "echo    -n -e \a \a" $[${curr_level}*4] times
+            Repeat "echo    ${curr_dir}" 1 times
+
+            if [[ "${curr_dir}" != "$( basename    ${curr_dir} )" ]]; then
+
+                continue
+            fi
+
             if (( ${prev_level} < ${curr_level} )); then
 
                 cd  ${prev_dir}
 
             elif (( ${prev_level} > ${curr_level} )); then
 
-                Repeat 'cd ..' ${curr_level} times
+                Repeat 'cd  ..' ${curr_level} times
             fi
 
             if [[ ${depth:${#depth}-1} == / ]]; then

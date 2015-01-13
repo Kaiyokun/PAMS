@@ -1,18 +1,18 @@
 ACTION=${1}
 
 #
-#   Brief:  返回当前脚本绝对路径
+#   Brief:  返回当前脚本所在目录绝对路径
 #   Argument List:
 #       relative_path:  必须是${BASH_SOURCE[0]}
 #   Return:     此脚本所在目录的绝对路径（不含空格）
-#   Example:    GetFullPath ${BASH_SOURCE[0]}
+#   Example:    GetAbsolutePath ${BASH_SOURCE[0]}
 #
-GetFullPath()
+GetAbsolutePath()
 {
     relative_path=${1}
     return=echo
 
-    #   首先，确定此脚本所在目录的绝对路径，先取得文件属性
+    #   首先取得文件属性
     file_attribute=$( ls    -l ${relative_path} )
 
     #   测试是否是符号链接
@@ -23,7 +23,7 @@ GetFullPath()
 
         file_path=${relative_path}
     #   是符号链接
-    else
+    elif [[ ${file_path:0:1} != / ]]; then
 
         file_path=$( cd $( dirname  ${relative_path} ) && pwd )/${file_path}
     fi
@@ -35,13 +35,13 @@ GetFullPath()
 if [[ ${ACTION} != '' ]]; then
 
     #   此脚本所在目录的绝对路径（不含空格）
-    THIS_DIRECTORY=$( GetFullPath   ${BASH_SOURCE[0]} )
+    THIS_DIRECTORY=$( GetAbsolutePath   ${BASH_SOURCE[0]} )
     NOW="$( date +"%Y-%m-%d %H:%M:%S" )"
 
     cd  ${THIS_DIRECTORY}
     zip pams.zip * -x deploy.sh
 
-    git add pams.zip deploy.sh
+    git add .
     git commit -m "No.${RANDOM} - zip file for deployment, commit time: ${NOW}"
     git push -u origin master
 

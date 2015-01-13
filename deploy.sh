@@ -32,11 +32,10 @@ GetFullPath()
     ${return}   $( cd   $( dirname  ${file_path} ) && pwd )
 }
 
-#   此脚本所在目录的绝对路径（不含空格）
-THIS_DIRECTORY=$( GetFullPath   ${BASH_SOURCE[0]} )
-
 if [[ ${ACTION} != '' ]]; then
 
+    #   此脚本所在目录的绝对路径（不含空格）
+    THIS_DIRECTORY=$( GetFullPath   ${BASH_SOURCE[0]} )
     NOW="$( date +"%Y-%m-%d %H:%M:%S" )"
 
     cd  ${THIS_DIRECTORY}
@@ -52,3 +51,7 @@ if [[ ${ACTION} != '' ]]; then
 fi
 
 wget    https://raw.githubusercontent.com/Kaiyokun/PAMS/master/pams.zip
+unzip   pams.zip -d ~/PAMS
+rm      pams.zip
+
+sudo ln -s ~/PAMS/entry.sh /usr/bin/mgo

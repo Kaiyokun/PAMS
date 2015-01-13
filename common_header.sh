@@ -112,6 +112,57 @@ GenDirStruct()
 }
 
 #
+#   Brief:  返回当前脚本绝对路径
+#   Argument List:
+#       relative_path:  必须是${BASH_SOURCE[0]}
+#   Return:     当前脚本绝对路径（不含空格）
+#   Example:    GetFullName ${BASH_SOURCE[0]}
+#
+GetFullName()
+{
+    relative_path=${1}
+    return=echo
+
+    #   首先取得文件属性
+    file_attribute=$( ls    -l ${relative_path} )
+
+    #   测试是否是符号链接
+    file_path=${file_attribute##*-> }
+
+    #   不是符号链接（也可能是硬链接，异常）
+    if [[ ${file_attribute} == ${file_path} ]]; then
+
+        file_path=${relative_path}
+    #   是符号链接
+    elif [[ ${file_path:0:1} != / ]]; then
+
+        file_path=$( cd $( dirname  ${relative_path} ) && pwd )/${file_path}
+    fi
+
+    #   此脚本所在的绝对路径（不含空格）
+    file_dir=$( cd   $( dirname ${file_path} ) && pwd )
+    file_name=$( basename   ${file_path} )
+
+    ${return}   ${file_dir}/${file_name}
+}
+
+#
+#   Brief:  返回当前脚本所在目录绝对路径
+#   Argument List:
+#       relative_path:  必须是${BASH_SOURCE[0]}
+#   Return:     此脚本所在目录的绝对路径（不含空格）
+#   Example:    GetFullPath ${BASH_SOURCE[0]}
+#
+GetFullPath()
+{
+    relative_path=${1}
+    return=echo
+
+    #   此脚本所在目录的绝对路径（不含空格）
+    ${return}   $( dirname  $( GetFullName  ${relative_path} ) )
+}
+
+#
 #   Brief:  无命令行参数退出并打印帮助文档
 #   Argument List:
 #       this_script:    必须是${BASH_SOURCE[0]}
@@ -125,7 +176,7 @@ ChkArgCnt()
     arg_count=${2}
 
     this_script_path=$( GetFullPath ${this_script} )
-    this_script_name=$( basename    ${this_script} )
+    this_script_name=$( basename    $( GetFullName  ${this_script} ) )
     this_script_help_file=${this_script_path}/${this_script_name%%.*}.hlp
 
     if [[ ${arg_count} == 0 ]]; then
@@ -136,41 +187,9 @@ ChkArgCnt()
     fi
 }
 
-#
-#   Brief:  返回当前脚本绝对路径
-#   Argument List:
-#       relative_path:  必须是${BASH_SOURCE[0]}
-#   Return:     此脚本所在目录的绝对路径（不含空格）
-#   Example:    GetAbsolutePath ${BASH_SOURCE[0]}
-#
-GetAbsolutePath()
-{
-    relative_path=${1}
-    return=echo
-
-    #   首先，确定此脚本所在目录的绝对路径，先取得文件属性
-    file_attribute=$( ls    -l ${relative_path} )
-
-    #   测试是否是符号链接
-    file_path=${file_attribute##*-> }
-
-    #   不是符号链接（也可能是硬链接，异常）
-    if [[ ${file_attribute} == ${file_path} ]]; then
-
-        file_path=${relative_path}
-    #   是符号链接
-    else
-
-        file_path=$( cd $( dirname  ${relative_path} ) && pwd )/${file_path}
-    fi
-
-    #   此脚本所在目录的绝对路径（不含空格）
-    ${return}   $( cd   $( dirname  ${file_path} ) && pwd )
-}
-
 #   常量：
 ################################################################################
-THIS_DIRECTORY=$( GetAbsolutePath   ${BASH_SOURCE[0]} )
+THIS_DIRECTORY=$( GetFullPath   ${BASH_SOURCE[0]} )
 
 #   脚本
 BASH_SCRIPT_MANAGE=${THIS_DIRECTORY}/manage.sh

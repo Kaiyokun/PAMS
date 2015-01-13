@@ -5,18 +5,18 @@
 COMMON_HEADER=common_header.sh
 
 #
-#   Brief:  返回当前脚本绝对路径
+#   Brief:  返回当前脚本所在目录绝对路径
 #   Argument List:
 #       relative_path:  必须是${BASH_SOURCE[0]}
 #   Return:     此脚本所在目录的绝对路径（不含空格）
-#   Example:    GetFullPath ${BASH_SOURCE[0]}
+#   Example:    GetAbsolutePath ${BASH_SOURCE[0]}
 #
-GetFullPath()
+GetAbsolutePath()
 {
     relative_path=${1}
     return=echo
 
-    #   首先，确定此脚本所在目录的绝对路径，先取得文件属性
+    #   首先取得文件属性
     file_attribute=$( ls    -l ${relative_path} )
 
     #   测试是否是符号链接
@@ -27,7 +27,7 @@ GetFullPath()
 
         file_path=${relative_path}
     #   是符号链接
-    else
+    elif [[ ${file_path:0:1} != / ]]; then
 
         file_path=$( cd $( dirname  ${relative_path} ) && pwd )/${file_path}
     fi
@@ -37,7 +37,7 @@ GetFullPath()
 }
 
 #   此脚本所在目录的绝对路径（不含空格）
-THIS_DIRECTORY=$( GetFullPath   ${BASH_SOURCE[0]} )
+THIS_DIRECTORY=$( GetAbsolutePath   ${BASH_SOURCE[0]} )
 
 #   引入头文件
 source  ${THIS_DIRECTORY}/${COMMON_HEADER}
@@ -77,7 +77,7 @@ clear
 echo    -e "   你好，$USER！欢迎使用C/C++工程自动化管理脚本！\n"
 echo    -n "工程[${PROJECT_NAME}]所在的根目录绝对路径为: "
 cd  ${PROJECT_DIRECTORY_ROOT} && pwd
-read    -t 3 -p "开始构建工程..."
+read    -t 3 -p "开始构建工程，[${BUILD_TYPE}]模式..."
 echo
 
 #   设置模板实参

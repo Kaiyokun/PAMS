@@ -43,7 +43,10 @@ for FILE in $(ls); do
 done
 
 #   启动构建
-read    -t 1 -p "   Step 2：开始构建..."
+echo
+echo
+read    -t 1 -p "   Step 2：开始构建[${BUILD_TYPE}]版本..."
+echo
 echo
 
 cd  ../${BUILT}

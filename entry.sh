@@ -74,10 +74,13 @@ fi
 
 #   进入到工程根目录下
 clear
-echo    -e "   你好，$USER！欢迎使用C/C++工程自动化管理脚本！\n"
-echo    -n "工程[${PROJECT_NAME}]所在的根目录绝对路径为: "
+echo    -e "    你好，$USER！欢迎使用C/C++工程自动化管理脚本！\n"
+echo    -n "    工程[${PROJECT_NAME}]所在的根目录绝对路径为: "
 cd  ${PROJECT_DIRECTORY_ROOT} && pwd
+echo
+echo
 read    -t 1 -p "   Step 1：开始创建目录结构..."
+echo
 echo
 
 #   设置模板实参

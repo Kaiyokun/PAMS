@@ -37,7 +37,10 @@ fi
 cd  ${BUILT}/${TEST_}${PROJECT_NAME}
 
 #   开始测试
+echo
+echo
 read    -t 1 -p "   Step 3：开始测试..."
+echo
 echo
 PS3='>> '
 
@@ -46,9 +49,17 @@ while true; do
     echo    "工程[${PROJECT_NAME}]测试程序集，请选择："
     echo    --------------------------------------------------------------------
 
-    select  EXE in $(ls); do
+    ITEM="$(ls) exit"
+
+    select  EXE in ${ITEM}; do
 
         if [[ ${EXE} != "" ]]; then
+
+            if [[ ${EXE} == exit ]]; then
+
+                clear
+                exit
+            fi
 
             echo
             echo    "启动[${EXE}]"

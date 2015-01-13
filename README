@@ -9,7 +9,8 @@
 编程练习。
 
 获取方法：
-    wget https://raw.githubusercontent.com/Kaiyokun/PAMS/master/deploy.sh | bash
+
+ wget -qO- https://raw.githubusercontent.com/Kaiyokun/PAMS/master/deploy | bash
 
 工程目录结构参考：
 

@@ -1,0 +1,9 @@
+################################################################################
+#                                                                              #
+#             THIS IS A TEMPLATE CMAKE SCRIPT FILE. DO NOT EDIT!!!             #
+#                                                                              #
+################################################################################
+
+SET(TEST_NAME ${TEST_}${PROJECT_NAME})
+SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/${TEST_NAME})
+

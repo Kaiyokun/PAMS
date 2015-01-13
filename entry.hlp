@@ -1,0 +1,8 @@
+    这是一个自动化管理C/C++工程的脚本工具。它可以实现自动生成工程目录结构、分类
+整理文件、生成CMakeLists.txt、执行编译以及自动启动测试。
+
+用法： mgo  <工程路径> [ Release | Debug(默认) ]
+示例：
+    1. mgo  Project/Demo Release
+    2. mgo  ～/Desktop/ProjectAlreadyExist
+

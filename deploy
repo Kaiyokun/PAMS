@@ -40,7 +40,7 @@ if [[ ${ACTION} != '' ]]; then
     NOW="$( date +"%Y-%m-%d %H:%M:%S" )"
 
     cd  ${THIS_DIRECTORY}
-    zip pams.zip * -x deploy.sh
+    zip pams.zip * -x deploy test_project.zip
 
     git add .
 

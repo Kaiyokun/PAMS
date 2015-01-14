@@ -67,3 +67,5 @@ sudo ln -s ~/PAMS/entry.sh /usr/bin/mgo
 wget    https://raw.githubusercontent.com/Kaiyokun/PAMS/master/test_project.zip
 unzip   test_project.zip -d test_project
 rm      test_project.zip
+read    -t 3 -p "启动测试..."
+mgo     test_project

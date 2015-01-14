@@ -58,14 +58,32 @@ if [[ ${ACTION} != '' ]]; then
     exit
 fi
 
+if [[ -d ~/PAMS ]]; then
+
+    rm  -r ~/PAMS
+fi
+
 wget    https://raw.githubusercontent.com/Kaiyokun/PAMS/master/pams.zip
 unzip   pams.zip -d ~/PAMS
 rm      pams.zip
 
 sudo ln -s ~/PAMS/entry.sh /usr/bin/mgo
 
+if [[ -d ~/桌面 ]]; then
+
+    cd  ~/桌面
+else
+    cd  ~/Desktop
+fi
+
+if [[ -d test_project ]]; then
+
+    rm  test_project
+fi 
+
 wget    https://raw.githubusercontent.com/Kaiyokun/PAMS/master/test_project.zip
 unzip   test_project.zip -d test_project
 rm      test_project.zip
-read    -t 3 -p "启动测试..."
+
+echo    -e "启动测试...\n"
 mgo     test_project

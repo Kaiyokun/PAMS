@@ -3,5 +3,5 @@
 
 用法： mgo  <工程路径> [ Release | Debug(默认) ]
 示例：
-    1. mgo  桌面/test_project
-    2. mgo  桌面/test_project Release
+    1. mgo  ~/桌面/test_project
+    2. mgo  ~/桌面/test_project Release

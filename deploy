@@ -85,5 +85,5 @@ wget    https://raw.githubusercontent.com/Kaiyokun/PAMS/master/test_project.zip
 unzip   test_project.zip -d test_project
 rm      test_project.zip
 
-read    -t 3 -p "启动测试..."
+echo    -e "启动测试...\n"
 mgo     test_project

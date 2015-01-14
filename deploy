@@ -78,12 +78,12 @@ fi
 
 if [[ -d test_project ]]; then
 
-    rm  test_project
+    rm  -r test_project
 fi 
 
 wget    https://raw.githubusercontent.com/Kaiyokun/PAMS/master/test_project.zip
 unzip   test_project.zip -d test_project
 rm      test_project.zip
 
-echo    -e "启动测试...\n"
+read    -t 3 -p "启动测试..."
 mgo     test_project

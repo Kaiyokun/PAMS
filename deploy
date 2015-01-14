@@ -86,4 +86,4 @@ unzip   test_project.zip -d test_project
 rm      test_project.zip
 
 echo    -e "启动测试...\n"
-mgo     test_project
+mgo

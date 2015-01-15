@@ -63,6 +63,57 @@ Repeat()
 }
 
 #
+#   Brief:  显示带颜色的消息
+#   Argument List：
+#       message(1): 要显示的消息
+#       (2):        in
+#       color(3):   颜色 enum {
+                        none="\e[m"
+                        red="\e[31m"
+                        green="\e[32m"
+                        blue="\e[34m"
+#                   }
+#   Return:     无
+#   Example:    Show ${message} in ${color}
+#
+Show()
+{
+    message=${1}
+    color=${3}
+
+    case    ${color} in
+
+        r)  font_color=${red}
+            ;;
+
+        g)  font_color=${green}
+            ;;
+
+        b)  font_color=${blue}
+            ;;
+
+        *)  font_color=${none}
+            ;;
+    esac
+
+    echo    -e "${font_color}${message}${none}"
+}
+
+#
+#   Brief:  暂停指定时间
+#   Argument List：
+#       seconds:    暂停秒数
+#   Return:     无
+#   Example:    Pause   ${seconds}
+#
+Pause()
+{
+    seconds=${1}
+
+    read    -t ${seconds}
+}
+
+#
 #   Brief:  按照目录结构参考文件建立相应目录结构
 #   Argument List：
 #       root_dir:   指定根目录
@@ -79,7 +130,7 @@ GenDirStruct()
     prev_level=0
     prev_dir=.
 
-    while read  line; do
+    while   read line; do
 
         depth=${line% *}
 
@@ -88,8 +139,9 @@ GenDirStruct()
             curr_level=$[${#depth}/4]
             curr_dir=${line##* }
 
+            Repeat "echo    -n -e \a \a" 2                  times
             Repeat "echo    -n -e \a \a" $[${curr_level}*4] times
-            Repeat "echo    ${curr_dir}" 1 times
+            Repeat "echo    ${curr_dir}" 1                  times
 
             if [[ "${curr_dir}" != "$( basename    ${curr_dir} )" ]]; then
 
@@ -197,6 +249,7 @@ ChkArgCnt()
 
 #   常量：
 ################################################################################
+#   此脚本所在目录
 THIS_DIRECTORY=$( GetFullPath   ${BASH_SOURCE[0]} )
 
 #   脚本

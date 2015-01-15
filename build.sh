@@ -43,12 +43,10 @@ for FILE in $(ls); do
 done
 
 #   启动构建
-echo
-echo
-read    -t 1 -p "   Step 2：开始构建[${BUILD_TYPE}]版本..."
-echo
-echo
-
+echo    -e "\n\n"
+read    -t 1
+Show "\t Step 2：开始构建[${BUILD_TYPE}]版本...\n\n" in g
+Pause   1
 cd  ../${BUILT}
 cmake   ..
 make

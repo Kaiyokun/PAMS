@@ -28,7 +28,7 @@ done
 ${BASH_SCRIPT_BUILD}    ${@}
 
 #   构建失败则退出
-if  [[ ${?} != 0 ]]; then
+if [[ ${?} != 0 ]]; then
 
     exit
 fi
@@ -37,25 +37,23 @@ fi
 cd  ${BUILT}/${TEST_}${PROJECT_NAME}
 
 #   开始测试
-echo
-echo
-read    -t 1 -p "   Step 3：开始测试..."
-echo
-echo
+echo    -e "\n\n"
+Show "\t Step 3：开始测试...\n\n" in b
+Pause   1
 PS3='>> '
 
-while true; do
+while   true; do
 
     echo    "工程[${PROJECT_NAME}]测试程序集，请选择："
     echo    --------------------------------------------------------------------
 
-    ITEM="$(ls) exit"
+    ITEM="$(ls) <exit>"
 
     select  EXE in ${ITEM}; do
 
         if [[ ${EXE} != "" ]]; then
 
-            if [[ ${EXE} == exit ]]; then
+            if [[ ${EXE} == \<exit\> ]]; then
 
                 clear
                 exit
@@ -71,7 +69,5 @@ while true; do
         break
     done
 
-    echo
-    echo
-    echo
+    echo    -e "\n\n\n"
 done

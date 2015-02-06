@@ -22,17 +22,29 @@ GetAbsolutePath()
     #   测试是否是符号链接
     file_path=${file_attribute##*-> }
 
-    #   不是符号链接（也可能是硬链接，异常）
-    if [[ ${file_attribute} == ${file_path} ]]; then
+    #   可能存在多重符号链接
+    while true; do
+        #   不是符号链接（也可能是硬链接，异常）
+        if [[ ${file_attribute} == ${file_path} ]]; then
 
-        file_path=${relative_path}
-    #   是符号链接
-    elif [[ ${file_path:0:1} != / ]]; then
+            file_path=${relative_path}
+            break
+        fi
 
-        file_path=$( cd $( dirname  ${relative_path} ) && pwd )/${file_path}
-    fi
+        #   是符号链接
+        if [[ ${file_path:0:1} != / ]]; then
 
-    #   此脚本所在目录的绝对路径（不含空格）
+            relative_path=$( cd \
+                $( dirname  ${relative_path} ) && pwd )/${file_path}
+        else
+            relative_path=${file_path}
+        fi
+
+        file_attribute=$( ls    -l ${relative_path} )
+        file_path=${file_attribute##*-> }
+    done
+
+    #   此脚本所在的绝对路径（不含空格）
     ${return}   $( cd   $( dirname  ${file_path} ) && pwd )
 }
 

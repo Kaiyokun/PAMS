@@ -1,0 +1,39 @@
+    # 以工程名（PROJECT_NAME）命名的工程根目录
+   ./ %PROJECT_NAME%
+    |
+    |   # 头文件目录（库）
+    +---/ %INCLUDE%
+    |   |
+    |   +--- *.h/*.hpp
+    |
+    |   # 库文件目录（非标准库）
+    +---/ %LIBRARY%
+    |   |
+    |   +--- *.so/*.a
+    |
+    |   # 源文件目录（库）
+    +---/ %SOURCE%
+    |   |
+    |   +--- CMakeLists.txt
+    |   +--- *.c/*.cpp
+    |
+    |   # 源文件目录（测试）
+    +---/ %TEST%
+    |   |
+    |   +--- CMakeLists.txt
+    |   +--- %TEST%_*.c/%TEST%_*.cpp
+    |
+    |   # 二进制目录（工程输出）%BUILT=built%
+    +---/ %BUILT%
+    |   |
+    |   |   # 动态库/静态库
+    |   +---/ %LIBRARY%
+    |   |   |
+    |   |   +--- lib%PROJECT_NAME%.so/lib%PROJECT_NAME%.a
+    |   |
+    |   |   # 可执行文件（测试）
+    |   +---/ %TEST%_%PROJECT_NAME%
+    |       |
+    |       +--- %TEST%_*/...
+    |
+    +--- CMakeLists.txt

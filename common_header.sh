@@ -1,10 +1,10 @@
 #   公共头文件，包含函数以及常量定义
 
-#   函数：
+#   函数:
 ################################################################################
 #
 #   Brief:  指定文件/管道中，将占位符替换为实际值
-#   Argument List：
+#   Argument List:
 #       placeholder(1):     占位符
 #       (2):                with
 #       actual_value(3):    实际值
@@ -18,33 +18,40 @@ Replace()
 {
     placeholder=${1}
     actual_value=${3}
-    option=${4+-i}
+    option="${4+-i} -r"
     file=${5}
 
-    sed ${option} "s/${placeholder}/${actual_value}/g" ${file}
+    sed ${option} "s/${placeholder}/${actual_value}/g" ${file}  #   用文件或管道
 }
 
 #
-#   Brief:  将内容写入指定文件
-#   Argument List：
-#       content(1): 内容
-#       (2):        to
-#       file(3):    指定的文件
+#   Brief:  将内容写入指定文件/标准输出
+#   Argument List:
+#       content(1):         内容
+#       [OPT] option(2):    to/NULL
+#       [OPT] file(3):      指定的文件/NULL
 #   Return:     无
 #   Example:    1. Write ${content} to ${file}
 #               2. Write ""         to ${file}
+#               3. Write "Normal output."
 #
 Write()
 {
     content=${1}
+    option=${2}
     file=${3}
 
-    echo    -e "${content}" >> "${file}"
+    if [[ ${option} == to ]]; then
+
+        echo    -e "${content}" >> "${file}"
+    else
+        echo    -e "${content}"
+    fi
 }
 
 #
 #   Brief:  循环操作
-#   Argument List：
+#   Argument List:
 #       operate(1): 操作
 #       count(2):   循环次数
 #       (3):        times
@@ -64,7 +71,7 @@ Repeat()
 
 #
 #   Brief:  显示带颜色的消息
-#   Argument List：
+#   Argument List:
 #       message(1): 要显示的消息
 #       (2):        in
 #       color(3):   颜色 enum {
@@ -101,10 +108,12 @@ Show()
 
 #
 #   Brief:  暂停指定时间
-#   Argument List：
-#       seconds:    暂停秒数
+#   Argument List:
+#       seconds(1): 暂停秒数
+#       (2):        second(s)
 #   Return:     无
-#   Example:    Pause   ${seconds}
+#   Example:    1. Pause 1 second
+#               2. Pause ${seconds} seconds
 #
 Pause()
 {
@@ -115,7 +124,7 @@ Pause()
 
 #
 #   Brief:  按照目录结构参考文件建立相应目录结构
-#   Argument List：
+#   Argument List:
 #       root_dir:   指定根目录
 #   Return:     无
 #   Example:    1. GenDirStruct ${root_dir} < ${ref_file}
@@ -134,14 +143,14 @@ GenDirStruct()
 
         depth=${line% *}
 
-        if [[ ${depth:${#depth}-1} == / || ${depth:${#depth}-1} == - ]]; then
+        if [[ ${depth:${#depth}-1} == / ]]; then #|| ${depth:${#depth}-1} == - ]]; then
 
             curr_level=$[${#depth}/4]
             curr_dir=${line##* }
 
-            Repeat "echo    -n -e \a \a" 2                  times
-            Repeat "echo    -n -e \a \a" $[${curr_level}*4] times
-            Repeat "echo    ${curr_dir}" 1                  times
+            #Repeat "echo    -n -e \a \a" 2                  times
+            #Repeat "echo    -n -e \a \a" $[${curr_level}*4] times
+            #Repeat "echo    ${curr_dir}" 1                  times
 
             if [[ "${curr_dir}" != "$( basename    ${curr_dir} )" ]]; then
 
@@ -157,18 +166,18 @@ GenDirStruct()
                 Repeat 'cd  ..' ${curr_level} times
             fi
 
-            if [[ ${depth:${#depth}-1} == / ]]; then
+            #if [[ ${depth:${#depth}-1} == / ]]; then
 
                 prev_level=${curr_level}
                 prev_dir=${curr_dir}
 
                 mkdir   -p ${curr_dir}
-            else
-                touch   ${curr_dir}
-                cd  ..
-            fi
+            #else
+            #    touch   ${curr_dir}
+            #    cd  ..
+            #fi
         fi
-    done    #   用管道或者输入重定向
+    done    #   用输入重定向或管道
 }
 
 #
@@ -189,15 +198,27 @@ GetFullName()
     #   测试是否是符号链接
     file_path=${file_attribute##*-> }
 
-    #   不是符号链接（也可能是硬链接，异常）
-    if [[ ${file_attribute} == ${file_path} ]]; then
+    #   可能存在多重符号链接
+    while true; do
+        #   不是符号链接（也可能是硬链接，异常）
+        if [[ ${file_attribute} == ${file_path} ]]; then
 
-        file_path=${relative_path}
-    #   是符号链接
-    elif [[ ${file_path:0:1} != / ]]; then
+            file_path=${relative_path}
+            break
+        fi
 
-        file_path=$( cd $( dirname  ${relative_path} ) && pwd )/${file_path}
-    fi
+        #   是符号链接
+        if [[ ${file_path:0:1} != / ]]; then
+
+            relative_path=$( cd \
+                $( dirname  ${relative_path} ) && pwd )/${file_path}
+        else
+            relative_path=${file_path}
+        fi
+
+        file_attribute=$( ls    -l ${relative_path} )
+        file_path=${file_attribute##*-> }
+    done
 
     #   此脚本所在的绝对路径（不含空格）
     file_dir=$( cd   $( dirname ${file_path} ) && pwd )
@@ -247,7 +268,97 @@ ChkArgCnt()
     fi
 }
 
-#   常量：
+#
+#   Brief:  提取文件模板参数
+#   Argument List:
+#       arg_list_file:  输出实参表到文件
+#       template_files: 模板文件列表
+#   Return:     无
+#   Example:    1. GenArgList   ${arg_list_file} ${template_files}
+#               2. GenArgList   .arguments $(ls)
+#
+GenArgList()
+{
+    arg_list_file=${1}
+    shift
+    template_files=${@}
+
+    arg_list=$( cat ${template_files}       |   \
+                grep    -E -o '%[^%=]+%'    |   \
+                sed     -r "s/%([^%]+)%/\1/g" )
+
+    ref_list=$( cat ${template_files}           |   \
+                grep    -E -o '%[^%]+=[^%]+%'   |   \
+                sed     -r "s/%([^%]+)%/\1/g" )
+
+    for arg in ${arg_list}; do
+
+        arg_list="$( echo   ${arg_list} | sed   -r "s/\<${arg}\>//g") ${arg}"
+    done
+
+    for ref in ${ref_list}; do
+
+        ref_list="$( echo   ${ref_list} |
+                        sed   -r "s/${ref%%=*}=[^ ]+//g") ${ref}"
+    done
+
+    rm  -f ${arg_list_file}
+
+    for arg in ${arg_list}; do
+
+        c=$( grep -H -n -E "%${arg}%" ${template_files} | sed -r 's/^/\/\/ /')
+        ref=$( echo "${ref_list}"           |   \
+               grep -E -o "${arg}=[^ ]+"    |   \
+               sed  -r "s/${arg}=([^ ]+)/\1/g")
+
+        Write "// Reference for [%${arg}%]:"                 to ${arg_list_file}
+        Write "${c}"                                         to ${arg_list_file}
+        Write "// ---------------------------------------\n" to ${arg_list_file}
+        Write "#define PLACE_HOLDER_${arg} ${ref} // Arg: %${arg}%" \
+                                                             to ${arg_list_file}
+        Write "\n"                                           to ${arg_list_file}
+    done
+}
+
+#
+#   Brief:  构建模板文件实例
+#   Argument List:
+#       file_instance:  文件实例
+#       header:         模板实参定义文件
+#       template_file:  模板文件
+#       [OPT] comment:  注释符号/NULL(#)
+#   Return:     无
+#   Example:    1. InstTmpltFile    ${file_instance} ${header} ${template_file}
+#               2. InstTmpltFile    CMakeLists.txt .arguments cmakelists_tmplt
+#
+InstTmpltFile()
+{
+    file_instance=${1}
+    header=${2}
+    template_file=${3}
+    comment=${4}
+
+    if [[ ${comment} == '' ]]; then
+
+        comment=#
+    else
+        comment=${comment////\\/}
+    fi
+
+    cat ${template_file}            |   \
+    sed -r "s/${comment}/\/\//g"    |   \
+    sed -r "s/%([^%]+)%/PLACE_HOLDER_\1/g" > ${file_instance}.c
+
+    gcc -E -C -undef -nostdinc -imacros ${header} ${file_instance}.c    |   \
+    sed "/#/d"                                                          |   \
+    sed "/^$/d"                                                         |   \
+    sed "s/\/\//${comment}/g"                                           |   \
+    sed -r "s/${comment}.*PLACE_HOLDER_.+=.+$//g" > ${file_instance}
+
+    rm  -f ${file_instance}.c
+}
+
+#   常量:
 ################################################################################
 #   此脚本所在目录
 THIS_DIRECTORY=$( GetFullPath   ${BASH_SOURCE[0]} )

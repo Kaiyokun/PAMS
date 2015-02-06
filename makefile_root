@@ -1,0 +1,21 @@
+SHELL=echo
+
+built: CMakeLists.txt
+	$(SHELL)	build
+
+CMakeLists.txt:
+	$(SHELL)	init
+
+.PHONY
+
+Debug/shared_library:
+	$(SHELL)	dbg_so
+
+Debug/static_library:
+	$(SHELL)	dbg_a
+
+Release/shared_library:
+	$(SHELL)	rel_so
+
+Release/static_library:
+	$(SHELL)	rel_a

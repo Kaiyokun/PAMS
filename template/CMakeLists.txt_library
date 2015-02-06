@@ -1,17 +1,15 @@
-################################################################################
-#                                                                              #
-#             THIS IS A TEMPLATE CMAKE SCRIPT FILE. DO NOT EDIT!!!             #
-#                                                                              #
-################################################################################
-
+#   库输出路径
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/${LIBRARY})
 
+#   将所有文件集合起来
 AUX_SOURCE_DIRECTORY(. LIBRARY_SOURCE)
 
+#   编译动态库
 ADD_LIBRARY(SHARED_${LIBRARY_NAME} SHARED ${LIBRARY_SOURCE})
 SET_TARGET_PROPERTIES(SHARED_${LIBRARY_NAME}
                         PROPERTIES OUTPUT_NAME ${LIBRARY_NAME})
 
+#   编译静态库
 ADD_LIBRARY(STATIC_${LIBRARY_NAME} STATIC ${LIBRARY_SOURCE})
 SET_TARGET_PROPERTIES(STATIC_${LIBRARY_NAME}
                         PROPERTIES OUTPUT_NAME ${LIBRARY_NAME})

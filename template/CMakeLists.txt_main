@@ -1,0 +1,36 @@
+#   CMAKE最低版本需求
+CMAKE_MINIMUM_REQUIRED(VERSION %CMAKE_VERSION%) #   %CMAKE_VERSION=2.8%
+#
+#   工程名
+PROJECT(%PROJECT_NAME%)
+#
+#   构建模式(Debug/Release)
+SET(CMAKE_BUILD_TYPE %BUILD_TYPE%)  #   %BUILD_TYPE=Debug%
+#   库类型(shared/static)
+SET(LIBRARY_TYPE %LIBRARY_TYPE%)    #   %LIBRARY_TYPE=static%
+#
+#   工程相关文件夹
+SET(INCLUDE %INCLUDE%)  #   %INCLUDE=include%
+SET(LIBRARY %LIBRARY%)  #   %LIBRARY=library%
+SET(SOURCE %SOURCE%)    #   %SOURCE=source%
+SET(TEST %TEST%)        #   %TEST=test%
+#
+#   额外的编译参数
+ADD_DEFINITIONS(%GCC_OPTIONS%)
+#
+#   以库为目标的工程，库名称应该与工程名一致
+SET(LIBRARY_NAME ${PROJECT_NAME})
+#
+#   头文件包含目录
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/${INCLUDE})
+#
+#   库文件包含目录
+LINK_DIRECTORIES(${PROJECT_SOURCE_DIR}/${LIBRARY})
+LINK_DIRECTORIES(${PROJECT_BINARY_DIR}/${LIBRARY})
+#
+#   源文件目录
+ADD_SUBDIRECTORY(${SOURCE})
+ADD_SUBDIRECTORY(${TEST})
+#
+#   开启测试
+ENABLE_TESTING()

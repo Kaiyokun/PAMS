@@ -1,0 +1,29 @@
+#   %ENTRY=mgo%
+ENTRY=%ENTRY%
+
+%BUILT%:	CMakeLists.txt
+	$(ENTRY)	build default
+
+CMakeLists.txt:
+	$(ENTRY)	init
+
+.PHONY: add_gcc_options			\
+        debug/shared_library    \
+        debug/static_library    \
+        release/shared_library	\
+        release/static_library
+
+add_gcc_options:
+	$(ENTRY)	add_gcc_options
+
+debug/shared_library:
+	$(ENTRY)	build debug shared
+
+debug/static_library:
+	$(ENTRY)	build debug static
+
+release/shared_library:
+	$(ENTRY)	build release shared
+
+release/static_library:
+	$(ENTRY)	build release static
